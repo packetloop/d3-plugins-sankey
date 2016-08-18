@@ -1,12 +1,15 @@
 var d3 = require('d3');
 
-d3.sankey = function() {
+d3.sankey = function(options) {
   var sankey = {},
       nodeWidth = 24,
       nodePadding = 8,
       size = [1, 1],
       nodes = [],
       links = [];
+
+  // these options are additional to standard d3 sankey
+  options = options || {};
 
   sankey.nodeWidth = function(_) {
     if (!arguments.length) return nodeWidth;
@@ -226,8 +229,12 @@ d3.sankey = function() {
             n = nodes.length,
             i;
 
+        var sortFn = (typeof options.customSort === 'function') ?
+          options.customSort(ascendingDepth) :
+          ascendingDepth;
+
         // Push any overlapping nodes down.
-        nodes.sort(ascendingDepth);
+        nodes.sort(sortFn);
         for (i = 0; i < n; ++i) {
           node = nodes[i];
           dy = y0 - node.y;
